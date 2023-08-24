@@ -1,0 +1,53 @@
+name: Fetch
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    name: Fetch
+    permissions:
+      contents: write
+      actions: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: reeganexe/checkout@v3
+        with:
+          path: main
+      - uses: reeganexe/checkout@v3
+        with:
+          path: patch
+      - name: Patch
+        env:
+          header: |
+            # actions/checkout mod
+
+            > 🚀 Lightweight. No pointless progress.
+            ```yaml
+            - uses: reeganexe/checkout@v3
+            ```
+
+            ----
+        run: |
+          cd main
+          git remote add upstream https://github.com/actions/checkout.git
+          git fetch --no-tags --prune --no-recurse-submodules --depth=1 upstream main:refs/remotes/upstream/main
+          git reset --hard upstream/main
+          rm -rf $(ls -A | grep -vE "(.git$)|(dist)|(action.yml)|(README.md)")
+
+          rsync -av ../patch/ ./ --exclude dist --exclude action.yml --exclude .git --exclude README.md
+          cat <(echo "$header") README.md > README2.md
+          mv README2.md README.md
+
+          sed -i 's/args\.push(\x27--prune\x27, \x27--progress\x27, \x27--no-recurse-submodules\x27);/args\.push(\x27--prune\x27, \x27--no-recurse-submodules\x27);/g' dist/index.js
+
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+
+          git add -A
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "generated"
+            git push -f
+          else
+            echo "Nothing new"
+          fi
