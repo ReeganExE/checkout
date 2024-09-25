@@ -1793,7 +1793,7 @@ function getInputs() {
         core.debug(`fetch tags = ${result.fetchTags}`);
         // Show fetch progress
         result.showProgress =
-            (core.getInput('show-progress') || 'true').toUpperCase() === 'TRUE';
+            (core.getInput('show-progress') || 'false').toUpperCase() === 'TRUE';
         core.debug(`show progress = ${result.showProgress}`);
         // LFS
         result.lfs = (core.getInput('lfs') || 'false').toUpperCase() === 'TRUE';
