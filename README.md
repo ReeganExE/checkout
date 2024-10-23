@@ -1,3 +1,16 @@
+# actions/checkout mod
+
+> 🚀 Lightweight. No pointless progress.
+```yaml
+# v4 (required Node.js v20)
+- uses: reeganexe/checkout@v4
+
+# v3
+- uses: reeganexe/checkout@v3
+```
+
+----
+
 [![Build and Test](https://github.com/actions/checkout/actions/workflows/test.yml/badge.svg)](https://github.com/actions/checkout/actions/workflows/test.yml)
 
 # Checkout V4
